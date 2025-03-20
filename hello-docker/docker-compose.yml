@@ -1,0 +1,7 @@
+version: "3.9"
+services:
+  hello:
+    build:
+      context: .
+    volumes:
+      - ./app:/app
