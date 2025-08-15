@@ -1,29 +1,22 @@
-# trading
+# Hello World Docker Application
 
-## Dockerコンテナの実行方法
+This is a simple Docker application that prints "hello world".
 
-1. `docker-compose`を使用してDockerイメージをビルド:
-   ```bash
-   docker-compose build
+## How to build and run
+0. (ローカルで実行する場合)Docker Desktopを起動。仮想環境は`env2`
+
+1. Build the Docker image:
+   ```
+   docker build -t hello-world hello-world/.
    ```
 
-2. `docker-compose`を使用してコンテナを起動:
-   ```bash
-   docker-compose up
+2. Run the Docker container:
+   ```
+   docker run hello-world
    ```
 
-   以下のメッセージが表示されます: `hello from docker`
+## Files
 
-### または、Docker CLIを使用する場合
-
-1. Dockerイメージをビルド:
-   ```bash
-   docker build -t hello-docker ./hello-docker
-   ```
-
-2. コンテナを実行:
-   ```bash
-   docker run --rm hello-docker
-   ```
-
-   以下のメッセージが表示されます: `hello from docker`
+- `app.py`: Simple Python script that imports pandas and prints "hello world"
+- `Dockerfile`: Docker configuration file
+- `requirements.txt`: Python dependencies (pandas)

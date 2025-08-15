@@ -1,11 +1,17 @@
-# 軽量なPythonベースのイメージを使用します（Python 3.9のスリム版）
+# Use Python 3.9 slim image
 FROM python:3.9-slim
 
-# 作業ディレクトリを設定します（コンテナ内での作業場所を指定）
+# Set working directory
 WORKDIR /app
 
-# アプリケーションコードをコンテナ内にコピーします（ローカルのapp/ディレクトリをコンテナ内にコピー）
-COPY app/ .
+# Copy requirements file
+COPY requirements.txt .
 
-# Pythonスクリプトを実行するコマンドを設定します（コンテナ起動時にmain.pyを実行）
-CMD ["python", "main.py"]
+# Install dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy the Python script
+COPY app.py .
+
+# Run the application
+CMD ["python", "app.py"]

@@ -1,0 +1,36 @@
+name: Build and Push to Artifact Registry
+
+on:
+  pull_request:
+    branches: [ main ]
+    paths:
+      - "hello-world/**"
+      - ".github/workflows/build-and-push.yml"
+  push:
+    branches: [ main ]
+    paths:
+      - "hello-world/**"
+      - ".github/workflows/build-and-push.yml"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      # プロジェクトはtrading-prod-468212でよかった？特定サービスではなく、別で管理した方がよい？（SAも）
+      IMAGE: asia-northeast1-docker.pkg.dev/trading-prod-468212/temp-repo/hello-world:latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Auth to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Configure Docker for Artifact Registry
+        run: gcloud auth configure-docker asia-northeast1-docker.pkg.dev
+
+      - name: Build and Push
+        run: |
+          docker build -t "$IMAGE" -f hello-world/Dockerfile hello-world
+          docker push "$IMAGE"
