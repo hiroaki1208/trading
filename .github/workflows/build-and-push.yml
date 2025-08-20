@@ -37,7 +37,7 @@ jobs:
         if: github.event_name == 'pull_request'
         env:
           # FIXME: push先レポジトリをpathによって変更する
-          IMAGE: asia-northeast1-docker.pkg.dev/trading-dev-469206/dev-repo/hello-world:pr-${{ github.event.number }}-${{ github.sha }}
+          IMAGE: asia-northeast1-docker.pkg.dev/trading-dev-469206/temp-repo/hello-world:pr-${{ github.event.number }}-${{ github.sha }}
         run: |
           docker build -t "$IMAGE" -f hello-world/Dockerfile hello-world
           docker push "$IMAGE"
