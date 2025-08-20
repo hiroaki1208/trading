@@ -2,6 +2,11 @@
 
 このリポジトリには、hello-worldのDockerイメージをGoogle Cloud Platform (GCP) Artifact Registryに自動デプロイするGitHub Actionsワークフローが含まれています。
 
+# memo
+
+- **Artifact Registryリポジトリの作成**はterraformでやった方がよいかも（今回はUI上でやった）
+
+
 ## 前提条件
 
 ワークフローを正常に実行するために、以下の設定が必要です：

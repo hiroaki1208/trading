@@ -15,22 +15,50 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    env:
-      # プロジェクトはtrading-prod-468212でよかった？特定サービスではなく、別で管理した方がよい？（SAも）
-      IMAGE: asia-northeast1-docker.pkg.dev/trading-prod-468212/temp-repo/hello-world:latest
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Auth to Google Cloud
+      # --------------------------------------------------
+      # PR の場合: 開発用プロジェクトに push
+      # --------------------------------------------------
+      - name: Auth to Google Cloud (Dev)
+        if: github.event_name == 'pull_request'
         uses: google-github-actions/auth@v2
         with:
-          credentials_json: ${{ secrets.GCP_SA_KEY }}
+          credentials_json: ${{ secrets.TERRAFORM_GCA_DEV }}
 
-      - name: Configure Docker for Artifact Registry
+      - name: Configure Docker for Artifact Registry (Dev)
+        if: github.event_name == 'pull_request'
         run: gcloud auth configure-docker asia-northeast1-docker.pkg.dev
 
-      - name: Build and Push
+      - name: Build and Push (Dev)
+        if: github.event_name == 'pull_request'
+        env:
+          # FIXME: push先レポジトリをpathによって変更する
+          IMAGE: asia-northeast1-docker.pkg.dev/trading-dev-469206/temp-repo/hello-world:pr-${{ github.event.number }}-${{ github.sha }}
+        run: |
+          docker build -t "$IMAGE" -f hello-world/Dockerfile hello-world
+          docker push "$IMAGE"
+
+      # --------------------------------------------------
+      # main にマージされた場合: 本番プロジェクトに push
+      # --------------------------------------------------
+      - name: Auth to Google Cloud (Prod)
+        if: github.event_name == 'push'
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.TERRAFORM_GCA_PROD }}
+
+      - name: Configure Docker for Artifact Registry (Prod)
+        if: github.event_name == 'push'
+        run: gcloud auth configure-docker asia-northeast1-docker.pkg.dev
+
+      - name: Build and Push (Prod)
+        if: github.event_name == 'push'
+        env:
+          IMAGE: asia-northeast1-docker.pkg.dev/trading-prod-468212/temp-repo/hello-world:latest
         run: |
           docker build -t "$IMAGE" -f hello-world/Dockerfile hello-world
           docker push "$IMAGE"
