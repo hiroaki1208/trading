@@ -38,9 +38,8 @@ jobs:
       - name: Build and Push (Dev)
         if: github.event_name == 'pull_request'
         env:
-          # FIXME: push先レポジトリをpathによって変更する
           HELLO_WORLD_IMAGE: asia-northeast1-docker.pkg.dev/trading-dev-469206/temp-repo/hello-world:latest
-          FETCH_DAILY_DATA_IMAGE: asia-northeast1-docker.pkg.dev/trading-dev-469206/temp-repo/fetch_daily_data:latest
+          FETCH_DAILY_DATA_IMAGE: asia-northeast1-docker.pkg.dev/trading-dev-469206/trading/fetch_daily_data:latest
         run: |
           docker build -t "$HELLO_WORLD_IMAGE" -f hello-world/Dockerfile hello-world
           docker push "$HELLO_WORLD_IMAGE"
@@ -64,7 +63,7 @@ jobs:
         if: github.event_name == 'push'
         env:
           HELLO_WORLD_IMAGE: asia-northeast1-docker.pkg.dev/trading-prod-468212/temp-repo/hello-world:latest
-          FETCH_DAILY_DATA_IMAGE: asia-northeast1-docker.pkg.dev/trading-prod-468212/temp-repo/fetch_daily_data:latest
+          FETCH_DAILY_DATA_IMAGE: asia-northeast1-docker.pkg.dev/trading-prod-468212/trading/fetch_daily_data:latest
         run: |
           docker build -t "$HELLO_WORLD_IMAGE" -f hello-world/Dockerfile hello-world
           docker push "$HELLO_WORLD_IMAGE"
