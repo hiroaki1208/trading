@@ -5,11 +5,13 @@ on:
     branches: [ main ]
     paths:
       - "hello-world/**"
+      - "fetch_daily_data/**"
       - ".github/workflows/build-and-push.yml"
   push:
     branches: [ main ]
     paths:
       - "hello-world/**"
+      - "fetch_daily_data/**"
       - ".github/workflows/build-and-push.yml"
 
 jobs:
@@ -37,11 +39,13 @@ jobs:
         if: github.event_name == 'pull_request'
         env:
           # FIXME: push先レポジトリをpathによって変更する
-          # IMAGE: asia-northeast1-docker.pkg.dev/trading-dev-469206/temp-repo/hello-world:pr-${{ github.event.number }}-${{ github.sha }}
-          IMAGE: asia-northeast1-docker.pkg.dev/trading-dev-469206/temp-repo/hello-world:latest
+          HELLO_WORLD_IMAGE: asia-northeast1-docker.pkg.dev/trading-dev-469206/temp-repo/hello-world:latest
+          FETCH_DAILY_DATA_IMAGE: asia-northeast1-docker.pkg.dev/trading-dev-469206/temp-repo/fetch_daily_data:latest
         run: |
-          docker build -t "$IMAGE" -f hello-world/Dockerfile hello-world
-          docker push "$IMAGE"
+          docker build -t "$HELLO_WORLD_IMAGE" -f hello-world/Dockerfile hello-world
+          docker push "$HELLO_WORLD_IMAGE"
+          docker build -t "$FETCH_DAILY_DATA_IMAGE" -f fetch_daily_data/Dockerfile fetch_daily_data
+          docker push "$FETCH_DAILY_DATA_IMAGE"
 
       # --------------------------------------------------
       # main にマージされた場合: 本番プロジェクトに push
@@ -59,7 +63,10 @@ jobs:
       - name: Build and Push (Prod)
         if: github.event_name == 'push'
         env:
-          IMAGE: asia-northeast1-docker.pkg.dev/trading-prod-468212/temp-repo/hello-world:latest
+          HELLO_WORLD_IMAGE: asia-northeast1-docker.pkg.dev/trading-prod-468212/temp-repo/hello-world:latest
+          FETCH_DAILY_DATA_IMAGE: asia-northeast1-docker.pkg.dev/trading-prod-468212/temp-repo/fetch_daily_data:latest
         run: |
-          docker build -t "$IMAGE" -f hello-world/Dockerfile hello-world
-          docker push "$IMAGE"
+          docker build -t "$HELLO_WORLD_IMAGE" -f hello-world/Dockerfile hello-world
+          docker push "$HELLO_WORLD_IMAGE"
+          docker build -t "$FETCH_DAILY_DATA_IMAGE" -f fetch_daily_data/Dockerfile fetch_daily_data
+          docker push "$FETCH_DAILY_DATA_IMAGE"
