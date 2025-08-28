@@ -2,3 +2,4 @@ pandas
 yfinance
 argparse
 datetime
+google-cloud-storage
