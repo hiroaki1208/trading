@@ -37,7 +37,13 @@ def main():
     
     # Set default ticker if not provided
     if args.ticker is None:
-        ticker = ["1655.T", "2413.T", "3283.T"]
+        # Read tickers from CSV file
+        try:
+            ticker_df = pd.read_csv('tickers.csv')
+            ticker = ticker_df['ticker'].tolist()
+        except Exception as e:
+            print(f"Error reading CSV file: {e}. Using default tickers.")
+            ticker = ["1655.T", "2413.T", "3283.T"]
     else:
         ticker = args.ticker
     
