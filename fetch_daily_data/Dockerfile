@@ -10,8 +10,9 @@ COPY requirements.txt .
 # Install dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the Python script
+# Copy the Python script and CSV file
 COPY app.py .
+COPY tickers.csv .
 
 # Set default entrypoint to python
 ENTRYPOINT ["python", "app.py"]
