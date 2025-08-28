@@ -3,7 +3,7 @@ import yfinance as yf
 import argparse
 from datetime import datetime, timedelta
 from google.cloud import storage
-import io
+import os
 
 def get_gcs_config(env):
     """環境に応じたGCS設定を返す"""
@@ -88,7 +88,10 @@ def main():
     if args.ticker is None:
         # Read tickers from CSV file
         try:
-            ticker_df = pd.read_csv('tickers.csv')
+            # Get the directory where this script is located
+            script_dir = os.path.dirname(os.path.abspath(__file__))
+            csv_path = os.path.join(script_dir, 'tickers.csv')
+            ticker_df = pd.read_csv(csv_path)
             ticker = ticker_df['ticker'].tolist()
         except Exception as e:
             print(f"Error reading CSV file: {e}. Using default tickers.")

@@ -3,3 +3,4 @@ yfinance
 argparse
 datetime
 google-cloud-storage
+os
