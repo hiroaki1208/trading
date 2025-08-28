@@ -69,8 +69,8 @@ def reshape_data_price(df, fetch_time_str):
 
 def main():
     parser = argparse.ArgumentParser(description='Fetch daily stock data')
-    parser.add_argument('--base_date', type=str, required=True, 
-                       help='Base date in YYYY-MM-DD format')
+    parser.add_argument('--base_date', type=str, default=datetime.now().strftime('%Y-%m-%d'),
+                       help='Base date in YYYY-MM-DD format (default: today)')
     parser.add_argument('--ticker', nargs='+', required=False,
                        help='List of ticker symbols')
     parser.add_argument('--env', type=str, default='dev', choices=['dev', 'prod'],
