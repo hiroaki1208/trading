@@ -6,7 +6,6 @@ ticker
 ^NDX
 ^DJI
 ^RUT
-^TOPX
 ^N225
 ^GDAXI
 JPY=X
@@ -17,3 +16,4 @@ AUDUSD=X
 ^TYX
 BTC-USD
 ETH-USD
+1326.T
