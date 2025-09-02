@@ -100,7 +100,7 @@ def main():
     else:
         ticker = args.ticker
     
-    start_date = base_date - timedelta(days=3)
+    start_date = base_date - timedelta(days=2)
     end_date = base_date + timedelta(days=1)  # yfinanceのendは含まれないので1日追加
     data_raw = yf.download(ticker, start=start_date, end=end_date)
 
