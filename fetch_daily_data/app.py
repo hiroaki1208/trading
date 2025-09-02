@@ -69,7 +69,7 @@ def reshape_data_price(df, fetch_time_str):
 
 def main():
     parser = argparse.ArgumentParser(description='Fetch daily stock data')
-    parser.add_argument('--base_date', type=str, default=datetime.now().strftime('%Y-%m-%d'),
+    parser.add_argument('--base_date', type=str, default=(datetime.now(datetime.timezone.utc) + timedelta(hours=9)).strftime('%Y-%m-%d'),
                        help='Base date in YYYY-MM-DD format (default: today)')
     parser.add_argument('--ticker', nargs='+', required=False,
                        help='List of ticker symbols')
@@ -81,8 +81,9 @@ def main():
     # Convert string to date
     base_date = datetime.strptime(args.base_date, '%Y-%m-%d').date()
 
-    # 現在の日時
-    now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    # 現在の日時（JST）
+    # 明示的にUTCで取得した後、9時間加算してJSTに変換
+    now_str = (datetime.now(datetime.timezone.utc) + timedelta(hours=9)).strftime("%Y-%m-%d %H:%M:%S")
 
     # Set default ticker if not provided
     if args.ticker is None:
@@ -100,7 +101,8 @@ def main():
         ticker = args.ticker
     
     start_date = base_date - timedelta(days=3)
-    data_raw = yf.download(ticker, start=start_date, end=base_date)
+    end_date = base_date + timedelta(days=1)  # yfinanceのendは含まれないので1日追加
+    data_raw = yf.download(ticker, start=start_date, end=end_date)
 
     # データの成形
     price_data = reshape_data_price(data_raw, now_str)
