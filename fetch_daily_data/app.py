@@ -1,7 +1,7 @@
 import pandas as pd
 import yfinance as yf
 import argparse
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from google.cloud import storage
 import os
 
@@ -69,7 +69,7 @@ def reshape_data_price(df, fetch_time_str):
 
 def main():
     parser = argparse.ArgumentParser(description='Fetch daily stock data')
-    parser.add_argument('--base_date', type=str, default=(datetime.now(datetime.timezone.utc) + timedelta(hours=9)).strftime('%Y-%m-%d'),
+    parser.add_argument('--base_date', type=str, default=(datetime.now(timezone.utc) + timedelta(hours=9)).strftime('%Y-%m-%d'),
                        help='Base date in YYYY-MM-DD format (default: today)')
     parser.add_argument('--ticker', nargs='+', required=False,
                        help='List of ticker symbols')
@@ -83,7 +83,7 @@ def main():
 
     # 現在の日時（JST）
     # 明示的にUTCで取得した後、9時間加算してJSTに変換
-    now_str = (datetime.now(datetime.timezone.utc) + timedelta(hours=9)).strftime("%Y-%m-%d %H:%M:%S")
+    now_str = (datetime.now(timezone.utc) + timedelta(hours=9)).strftime("%Y-%m-%d %H:%M:%S")
 
     # Set default ticker if not provided
     if args.ticker is None:
