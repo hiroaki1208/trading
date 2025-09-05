@@ -20,7 +20,7 @@ def get_gcs_config(env):
     else:
         raise ValueError(f"Unsupported environment: {env}")
 
-def upload_to_gcs(df, env, now_str):
+def upload_to_gcs(df, env, now_str, now_dt_utc_str):
     """DataFrameをCSV形式でGCSにアップロード"""
     try:
         config = get_gcs_config(env)
@@ -29,7 +29,7 @@ def upload_to_gcs(df, env, now_str):
         
         # ファイル名作成（スペースとコロンを削除）
         timestamp = now_str.replace('-', '').replace(' ', '_').replace(':', '')
-        filename = f"price_data/fetch_at_{timestamp}.csv"
+        filename = f"price_data/{now_dt_utc_str}/fetch_at_{timestamp}.csv"
         
         # DataFrameをCSV文字列に変換
         csv_string = df.to_csv(index=False)
@@ -84,6 +84,7 @@ def main():
     # 現在の日時（JST）
     # 明示的にUTCで取得した後、9時間加算してJSTに変換
     now_str = (datetime.now(timezone.utc) + timedelta(hours=9)).strftime("%Y-%m-%d %H:%M:%S")
+    now_dt_utc_str = (datetime.now(timezone.utc)).strftime("%Y%m%d")
 
     # Set default ticker if not provided
     if args.ticker is None:
@@ -108,7 +109,7 @@ def main():
     price_data = reshape_data_price(data_raw, now_str)
 
     # GCSにアップロード
-    success = upload_to_gcs(price_data, args.env, now_str)
+    success = upload_to_gcs(price_data, args.env, now_str, now_dt_utc_str)
     if not success:
         print("Failed to upload to GCS. Exiting.")
         exit(1)
